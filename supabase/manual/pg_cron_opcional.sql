@@ -1,0 +1,25 @@
+-- Alternativa ao Vercel Cron. Não rode este arquivo junto com as migrations:
+-- ele depende de extensões, da URL pública e do segredo, que não devem
+-- ficar no histórico do Git já preenchidos.
+--
+-- No painel do Supabase: Database → Extensions → habilite pg_cron e pg_net.
+-- Troque a URL e o segredo. O endpoint é idempotente: o mesmo alerta
+-- (plano + tipo) não é enviado duas vezes.
+
+-- create extension if not exists pg_cron with schema extensions;
+-- create extension if not exists pg_net with schema extensions;
+
+-- select cron.schedule(
+--   'cicobi-alertas-planos',
+--   '0 11 * * *',
+--   $$
+--   select net.http_post(
+--     url := 'https://SEU_APP.vercel.app/api/cron/alertas',
+--     headers := jsonb_build_object(
+--       'Authorization', 'Bearer SEU_CRON_SECRET',
+--       'Content-Type', 'application/json'
+--     ),
+--     body := '{}'::jsonb
+--   );
+--   $$
+-- );
